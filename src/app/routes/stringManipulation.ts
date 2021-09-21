@@ -1,9 +1,10 @@
 import { Router } from "express";
-
+import { Request, Response } from "express";
 import Challenge from "../Challenge";
+
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
 
     let str: string
     req.query.str ? str = String(req.query.str) : str = 'No llegó query...'
