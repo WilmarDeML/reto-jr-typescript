@@ -14,46 +14,38 @@ app.listen(puerto, function () {
   console.log(`Servidor escuchando en el puerto ${puerto}`);
 });
 
-const ingredients = [
-  {
-    "id": "1",
-    "item": "Bacon"
-  },
-  {
-    "id": "2",
-    "item": "Eggs"
-  },
-  {
-    "id": "3",
-    "item": "Milk"
-  },
-  {
-    "id": "4",
-    "item": "Butter"
-  }
-];
-app.use(morgan('dev'))
-app.use(cors({
-  origin: '*'
-}))
 app.use('/challenge', routes)
-app.get('/ingredients', (req, res) =>{
-  res.send(ingredients);
-});
 
-app.get('/', function (req, res) {
-  res.send('Hola Mundo Soy Wilmar Zapaat!!!');
-})
+//Probando Servidor
 
-// async function average(a: number, b: number){
-//   try {
-//   const response = a + b / 2;
-//   return response;
-//   } catch (e) {
-//   throw new TypeError("Ha ocurrido un error con este reto");
+// const ingredients = [
+//   {
+//     "id": "1",
+//     "item": "Bacon"
+//   },
+//   {
+//     "id": "2",
+//     "item": "Eggs"
+//   },
+//   {
+//     "id": "3",
+//     "item": "Milk"
+//   },
+//   {
+//     "id": "4",
+//     "item": "Butter"
 //   }
-//   }
+// ];
+// app.use(morgan('dev'))
+// app.use(cors({
+//   origin: '*'
+// }))
+// app.get('/ingredients', (req, res) =>{
+//   res.send(ingredients);
+// });
 
-//  console.log( average(5, 3) )
+// app.get('/', function (req, res) {
+//   res.send('Hola Mundo Soy Wilmar Zapaat!!!');
+// })
 
 export default app
