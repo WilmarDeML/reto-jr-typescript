@@ -4,13 +4,15 @@ import Challenge from "../Challenge";
 const router = Router();
 
 router.get('/', async (req, res) => {
-    const num1 = Number(req.query.a)
-    const num2 = Number(req.query.b)
-    // const numero1 = req.query
-    // const numeros = req.body
-    const ch = new Challenge
+
+    const num1: number = Number(req.query.a)
+    const num2: number = Number(req.query.b)
+    
+    const ch: Challenge = new Challenge
     const promedio = await ch.average(num1, num2);
+    
     res.send({
+        numerosEvaluados: `${num1} y ${num2}`,
         errorExpresion: `${num1} + ${num2} / 2`,
         correctExpresion: `(${num1} + ${num2}) / 2`,
         averageOk: promedio.ok,
