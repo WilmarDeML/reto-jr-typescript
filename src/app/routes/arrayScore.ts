@@ -6,15 +6,16 @@ const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
 
-    let str: string
-    req.query.str ? str = String(req.query.str) : str = 'No llegó query...'
+    let arrStr: string[]
+    req.query.array ? arrStr = String(req.query.array).split(',') : arrStr = []
+
+    let arrNum: number[] = arrStr.map(i => parseInt(i))
 
     const ch: Challenge = new Challenge
-    const response: string = await ch.evaluarSigno(str);
-    
+    const response = await ch.arrayScore(arrNum);
+
     res.send({
-        Response: response,
-        Request: str
+        Response: response
     });
 })
 

@@ -6,15 +6,15 @@ const router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
 
-    let str: string
-    req.query.str ? str = String(req.query.str) : str = 'No llegó query...'
-
+    const n: number = Number(req.query.n);
     const ch: Challenge = new Challenge
-    const response: string = await ch.evaluarSigno(str);
+    const response: any = await ch.myCows(n);
     
     res.send({
-        Response: response,
-        Request: str
+        Response: {
+            cantidadVacas: n,
+            ...response
+        }
     });
 })
 
