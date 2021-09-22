@@ -14,7 +14,12 @@ app.listen(puerto, function () {
   console.log(`Servidor escuchando en el puerto ${puerto}`);
 });
 
+app.use(morgan('dev'))
+app.use(cors({
+  origin: '*'
+}))
 app.use('/challenge', routes)
+
 
 //Probando Servidor
 
@@ -36,10 +41,7 @@ app.use('/challenge', routes)
 //     "item": "Butter"
 //   }
 // ];
-// app.use(morgan('dev'))
-// app.use(cors({
-//   origin: '*'
-// }))
+
 // app.get('/ingredients', (req, res) =>{
 //   res.send(ingredients);
 // });

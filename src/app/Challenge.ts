@@ -1,6 +1,5 @@
 import axios from "axios";
 import { response } from "express";
-import { createHeritageClause } from "typescript";
 class Challenge {
 
     // x: number;
@@ -12,12 +11,25 @@ class Challenge {
     // }
 
     public async average(a: number, b: number){
-        try {
-            const response = {
-                ok: (a + b) / 2,
-                fail: a + b / 2
-            };
-            return response
+        try {     
+            if (a && b) {
+                const response = {
+                    numerosEvaluados: `${a} y ${b}`,
+                    errorExpresion: `${a} + ${b} / 2`,
+                    correctExpresion: `(${a} + ${b}) / 2`,
+                    ok: (a + b) / 2,
+                    fail: a + b / 2,
+                    description: 'Por jerarquía se ejecuta primero la división cuando no hay parentesis y luego la suma'
+                };
+                return response                
+            } else {
+                const response = {
+                    info: `Debe ingresar dos parametros en la dirección http://localhost:3000/challenge/average`,
+                    solucion: `http://localhost:3000/challenge/average?a=3&b=8`,
+                    sugerencia: 'Cambiar los valores de a={otroNumero} y b={otroNumero}'
+                }
+                return response
+            }
         } catch (error) {
             throw new TypeError('Ha ocurrido un error con este reto')
         }
@@ -28,7 +40,7 @@ class Challenge {
             
             return cadena[cadena.length - 1] === '!' ? 
                 cadena.substr(0, cadena.length - 1) :
-                cadena
+                'No llegó query...'
             
         } catch (error) {
             throw new TypeError('Ha ocurrido un error con este reto')
@@ -59,7 +71,7 @@ class Challenge {
         }
         
         arr.forEach(element => {
-            
+
             element % 2 === 0 ? response.output += 1 
             :
                 element !== 5 ? response.output += 3 
