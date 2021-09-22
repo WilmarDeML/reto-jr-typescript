@@ -52,6 +52,24 @@ class Challenge {
         return response
     }
 
+    public async arrayScore(arr: Array<number>/*number[]*/){
+        const response: any = {
+            input: arr,
+            output: 0
+        }
+        
+        arr.forEach(element => {
+            
+            element % 2 === 0 ? response.output += 1 
+            :
+                element !== 5 ? response.output += 3 
+            :
+            response.output += 5
+        });
+
+        return response
+    }
+
     public async transformArray(matriz: any[][], order: string){
         let response: number[] = []
 
@@ -175,26 +193,30 @@ class Challenge {
 
     public async tracking(codigo: string){
         
-        const respuesta = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/')).data
-        console.log(respuesta.status)
-        
-        if(codigo.length === 11 && codigo[0] !== '7'){
-        
+        //Valida si el código tiene 11 dígitos que corresponden a una guía
+        if(codigo.length === 11 ){
+
+            const respuesta: any = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/')).data
+           
             const { status, data, isError } = respuesta
+
             const { guias } = data
-            const guiaEncontrada = guias.find((guia: any) => guia.codigo_remision === codigo)
+        
+            const guiaEncontrada: any = guias.find((guia: any) => guia.codigo_remision === codigo)
             
             if(guiaEncontrada){
-                const { unidades } = guiaEncontrada
-                // console.log(unidades)
 
-                const dataEtiquetas = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/checkpoint/')).data
-                // console.log(dataEtiquetas)
+                const { unidades } = guiaEncontrada
+
+                const dataEtiquetas: any = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/checkpoint/')).data
+
                 const { data } = dataEtiquetas
 
-                const unidadesActuales = unidades.map((unidad: any, i: number) => {
-                    const etiquetasEncontradas = data.filter((e: any) => e.etiqueta1d === unidad.etiqueta1d)
-                    const tracking = etiquetasEncontradas.map((e: any, i: number) => {
+                const unidadesActuales: any[] = unidades.map((unidad: any, i: number) => {
+
+                    const etiquetasEncontradas: any[] = data.filter((e: any) => e.etiqueta1d === unidad.etiqueta1d)
+
+                    const tracking: Object = etiquetasEncontradas.map((e: any, i: number) => {
                         return {
                             checkpoint: e.checkpoint,
                             tipo: e.tipo
@@ -214,10 +236,11 @@ class Challenge {
                     data: {
                         ...guiaEncontrada,
                         unidades: unidadesActuales
-                    },
-    
+                    },    
                 }
+
                 return response
+            //Si no existe la guía
             } else {
                 const response: Object = {
                     isError: true,
@@ -227,9 +250,75 @@ class Challenge {
                     }
                 }
                 return response;
-            }            
+            }   
+        // Valida que el código corresponda a una etiqueta1d         
         } else if (codigo.length === 15 && codigo[0] === '7') {
-            
+
+            const respuesta: any = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/')).data
+
+            const { status, data, isError } = respuesta
+
+            const { guias } = data
+
+            const etiquetaEncontrada: any = guias.find((guia: any) => guia.unidades.find((unidad: any) => unidad.etiqueta1d === codigo))
+
+            if(etiquetaEncontrada){
+
+                const dataEtiquetas: any = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/checkpoint/')).data
+
+                const { data } = dataEtiquetas
+
+                const etiquetasEncontradas: any[] = data.filter((e: any) => e.etiqueta1d === codigo)
+
+                const { codigo_remision, nombre_destinatario, dir_destinatario } = etiquetaEncontrada
+                
+                const tracking: Object = etiquetasEncontradas.map((e: any) => {
+                    return {
+                        checkpoint: e.checkpoint,
+                        tipo: e.tipo
+                    }
+                })
+
+                const response: Object = {
+                    isError,
+                    status,
+                    data: {
+                        etiqueta: codigo,
+                        informacion_guia: {
+                            codigo_remision,
+                            nombre_destinatario,
+                            dir_destinatario
+                        },
+                        cantidad_checkpoints: etiquetasEncontradas.length,
+                        tracking
+                    }    
+                }
+
+                return response
+            //Si no existe la etiqueta
+            } else {
+                const response: Object = {
+                    isError: true,
+                    status,
+                    data: {
+                        mensage: 'La etiqueta no fue encontrada!'
+                    }
+                }
+            }
+            const response: Object = {
+                etiquetaEncontrada
+            }
+
+            return response
+        //Si se ingresa un código que no corresponda a una guía ni a una etiqueta
+        } else {
+            const response: Object = {
+                isError: true,
+                status: "failure",
+                data: {
+                    mensage: 'El código no corresponde a una guía ni a una etiqueta válida!!'
+                }
+            }
         }
     }
 }

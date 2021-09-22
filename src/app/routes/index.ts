@@ -6,6 +6,7 @@ import sumArray from './sumArray'
 import transformArray from './transformArray'
 import myCows from './myCows'
 import tracking from './tracking'
+import arrayScore from './arrayScore'
 
 const router = Router()
 
@@ -15,5 +16,6 @@ router.use('/sumArray', sumArray)
 router.use('/transformArray', transformArray)
 router.use('/myCows', myCows)
 router.use('/tracking', tracking)
+router.use('/arrayScore', arrayScore)
 
 export default router
