@@ -10,15 +10,10 @@ router.get('/', async (req: Request, res: Response) => {
     const num2: number = Number(req.query.b)
     
     const ch: Challenge = new Challenge
-    const promedio = await ch.average(num1, num2);
+    const response = await ch.average(num1, num2);
 
     res.send({
-        numerosEvaluados: `${num1} y ${num2}`,
-        errorExpresion: `${num1} + ${num2} / 2`,
-        correctExpresion: `(${num1} + ${num2}) / 2`,
-        averageOk: promedio.ok,
-        averageFail: promedio.fail,
-        description: 'Por jerarquía se ejecuta primero la división cuando no hay parentesis y luego la suma'
+        response
     });
 })
 
