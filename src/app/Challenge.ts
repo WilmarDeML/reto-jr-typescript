@@ -1,3 +1,6 @@
+import axios from "axios";
+import { response } from "express";
+import { createHeritageClause } from "typescript";
 class Challenge {
 
     // x: number;
@@ -168,6 +171,66 @@ class Challenge {
         }
 
         return response
+    }
+
+    public async tracking(codigo: string){
+        
+        const respuesta = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/')).data
+        console.log(respuesta.status)
+        
+        if(codigo.length === 11 && codigo[0] !== '7'){
+        
+            const { status, data, isError } = respuesta
+            const { guias } = data
+            const guiaEncontrada = guias.find((guia: any) => guia.codigo_remision === codigo)
+            
+            if(guiaEncontrada){
+                const { unidades } = guiaEncontrada
+                // console.log(unidades)
+
+                const dataEtiquetas = (await axios.get('https://api.coordinadora.com/cm-model-testing/api/v1/talentos/checkpoint/')).data
+                // console.log(dataEtiquetas)
+                const { data } = dataEtiquetas
+
+                const unidadesActuales = unidades.map((unidad: any, i: number) => {
+                    const etiquetasEncontradas = data.filter((e: any) => e.etiqueta1d === unidad.etiqueta1d)
+                    const tracking = etiquetasEncontradas.map((e: any, i: number) => {
+                        return {
+                            checkpoint: e.checkpoint,
+                            tipo: e.tipo
+                        }
+                    })
+                    
+                    return {
+                        etiqueta1d: unidad.etiqueta1d,
+                        cantidad_checkpoints: etiquetasEncontradas.length,
+                        tracking
+                    }
+                })
+
+                const response: Object = {
+                    isError,
+                    status,
+                    data: {
+                        ...guiaEncontrada,
+                        unidades: unidadesActuales
+                    },
+    
+                }
+                return response
+            } else {
+                const response: Object = {
+                    isError: true,
+                    status,
+                    data: {
+                        mensage: 'La guía no fue encontrada!'
+                    }
+                }
+                return response;
+            }            
+        } else if (codigo.length === 15 && codigo[0] === '7') {
+            
+        }
     }
 }
 
